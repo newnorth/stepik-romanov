@@ -1,58 +1,129 @@
+// package main
+
+// import (
+// 	"fmt"
+// 	"log"
+// 	"os"
+// 	"path/filepath"
+// )
+
+// func main() {
+
+// 	err := filepath.Walk("./testdata",
+
+// 		func(path string, info os.FileInfo, err error) error {
+
+// 			if err != nil {
+// 				return err
+// 			}
+
+// 			fmt.Println(path)
+// 			return err
+// 		})
+
+// 	if err != nil {
+
+// 		log.Println(err)
+// 	}
+// }
+
 package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 )
 
-func dirTree(out *os.File, path string, printFiles bool) error {
+var space = "\t"
 
-	if !printFiles {
-		treeDirFile, err := os.ReadDir(path)
-		if err != nil {
-			return err
-		}
-		// fmt.Println(".")
-
-		for _, v := range treeDirFile {
-			tab := "\t"
-			fmt.Println(tab, v)
-			if v.IsDir() {
-				path = path + "/" + v.Name()
-				tab += "\t"
-				dirTree(out, path, false)
-			}
-			// fmt.Println(v.Name())
-		}
-	} else {
-		fmt.Println("Here files tree.")
+func dirTree(path, space string) {
+	tree, err := os.ReadDir(path)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	return nil
+	for _, v := range tree {
+		fmt.Println(v.Name())
+		if v.IsDir() {
+			path += "/" + v.Name()
+			space += "\t"
+			dirTree(path, space)
+		}
+		// if v.IsDir() {
+		// 	path := fmt.Sprintf("./%s", v.Name())
+		// 	tree1, err := os.ReadDir(path)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	for _, w := range tree1 {
+		// 		fmt.Printf("\t%s\n", w.Name())
+		// 	}
+		// }
+	}
 }
 
 func main() {
-	outLook := os.Stdout
-
-	if !(len(os.Args) == 2 || len(os.Args) == 3) {
-		fmt.Println("Error, need write 1 or 2 parametrs, example: \"go run main.go . (-f).\"")
-		os.Exit(0)
-	}
-
-	path := os.Args[1]
-
-	printFiles := false
-	if len(os.Args) == 3 && os.Args[2] == "-f" {
-		printFiles = true
-	}
-
-	err := dirTree(outLook, path, printFiles)
-	if err != nil {
-		fmt.Println("Error read files from directory:", err)
-		os.Exit(0)
-	}
+	path := "."
+	dirTree(path, space)
 }
 
+// _____________________________________________________________________________________________________________
+// package main
+
+// import (
+// 	"fmt"
+// 	"os"
+// )
+
+// func dirTree(out *os.File, path string, printFiles bool) error {
+
+// 	if !printFiles {
+// 		treeDirFile, err := os.ReadDir(path)
+// 		if err != nil {
+// 			return err
+// 		}
+// 		// fmt.Println(".")
+
+// 		for _, v := range treeDirFile {
+// 			tab := "\t"
+// 			fmt.Println(tab, v)
+// 			if v.IsDir() {
+// 				path = path + "/" + v.Name()
+// 				tab += "\t"
+// 				dirTree(out, path, false)
+// 			}
+// 			// fmt.Println(v.Name())
+// 		}
+// 	} else {
+// 		fmt.Println("Here files tree.")
+// 	}
+
+// 	return nil
+// }
+
+// func main() {
+// 	outLook := os.Stdout
+
+// 	if !(len(os.Args) == 2 || len(os.Args) == 3) {
+// 		fmt.Println("Error, need write 1 or 2 parametrs, example: \"go run main.go . (-f).\"")
+// 		os.Exit(0)
+// 	}
+
+// 	path := os.Args[1]
+
+// 	printFiles := false
+// 	if len(os.Args) == 3 && os.Args[2] == "-f" {
+// 		printFiles = true
+// 	}
+
+// 	err := dirTree(outLook, path, printFiles)
+// 	if err != nil {
+// 		fmt.Println("Error read files from directory:", err)
+// 		os.Exit(0)
+// 	}
+// }
+// __________________________________________________________________________________________________________
 // func dirTree1(in string) {
 // 	treeDir, err := os.ReadDir(in)
 // 	if err != nil {
