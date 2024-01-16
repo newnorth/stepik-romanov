@@ -12,9 +12,16 @@ func dirTree(out *os.File, path string, printFiles bool) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println(".")
+		// fmt.Println(".")
+
 		for _, v := range treeDirFile {
-			fmt.Println(v)
+			tab := "\t"
+			fmt.Println(tab, v)
+			if v.IsDir() {
+				path = path + "/" + v.Name()
+				tab += "\t"
+				dirTree(out, path, false)
+			}
 			// fmt.Println(v.Name())
 		}
 	} else {
